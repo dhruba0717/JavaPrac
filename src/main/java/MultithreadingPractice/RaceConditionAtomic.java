@@ -18,6 +18,7 @@ public class RaceConditionAtomic {
     // use Atomic keyword to solve
 
     public static AtomicInteger count = new AtomicInteger(0);
+//static Integer count = new Integer(0);
     public static int getCount() {
         return count.get();
     }

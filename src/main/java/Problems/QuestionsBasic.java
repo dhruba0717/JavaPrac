@@ -1,19 +1,52 @@
 package Problems;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class QuestionsBasic {
 
     public static void main(String[] args) {
 //        Scanner s = new Scanner(System.in);
 //        System.out.println("Enter number");
-        System.out.println(isArmstrong(153));
+//        System.out.println(isArmstrong(153));
 //        System.out.println(getLength(567));
 
 //        System.out.println(isPrime(83));
+        //        System.out.println(checkPalindrome("madam"));
+       // System.out.println(checkOccurence("sentence"));
+//        System.out.println(isValid("()"));
+//        System.out.println(permutationOfString("ABC"));
+        System.out.println(reverseSentence("My Name is Srijani"));
     }
 
+    public static String reverseSentence(String s){
+        char[] arr = s.toCharArray();
+        int left = 0;
+        int right = s.length() -1;
+        while(left<=right){
+            char temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+            left++;
+            right--;
+        }
+        return new String(arr);
+    }
 
+    static List<String> permutationOfString(String s){
+        List<String> result = new ArrayList<>();
+        if(s==null || s.isEmpty()) return result;
+        permute("",s,result);
+        return result;
+    }
+
+    private static void permute(String prefix, String remaining, List<String> result) {
+        if(remaining.isEmpty()){
+            result.add(prefix);
+            return;
+        }
+
+
+    }
 
     // write a function to tell if number is prime
     static boolean isPrime(int x){
@@ -59,6 +92,61 @@ public class QuestionsBasic {
         return sum == value;
 
     }
+
+    public static boolean checkPalindrome(String s){
+        char[] arr = s.toCharArray();
+        for(int i = 0; i < arr.length/2; i++){
+
+            if (  arr[i] != arr[arr.length - i -1]){
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+    public static HashMap<Character, Integer> checkOccurence(String s) {
+        HashMap<Character, Integer> hashArr = new HashMap<>();
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (hashArr.containsKey(arr[i])) {
+                hashArr.put(arr[i], hashArr.get(arr[i]) + 1);
+            } else {
+                hashArr.put(arr[i], 1);
+            }
+        }
+        return hashArr;
+    }
+
+
+
+    public static boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+
+        for (char c : s.toCharArray()){
+            // if opening tags push into stack
+            if(c == '(' || c =='[' || c == '{'){
+                stack.push(c);
+            }
+            else {
+                // if not opening tag --> stack should be empty
+                if(stack.isEmpty()) return false;
+                // else tag should have opening tag in the stack already
+                char top = stack.pop();
+                if(c == ')' && top != '(' ||
+                        c == ']' && top != '[' ||
+                        c == '}' && top != '{'){
+                    return false;
+                }
+            }
+
+        }
+        // at the end stack should be empty if all matches
+        return stack.isEmpty();
+    }
+
+    //  same using
 
 
 

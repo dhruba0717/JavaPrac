@@ -1,7 +1,6 @@
 package LCProbs;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Easy {
 
@@ -11,18 +10,182 @@ public class Easy {
 //        System.out.println(isAnagram("dhruba", "rubahd"));
 //        System.out.println(buySellStock(new int[]{7,6,4,3,1}));
 //        System.out.println(buySellStockUsingTwoLoops(new int[]{7,1,5,3,6,4}));
-        System.out.println(buySellStockOptimized(new int[]{2,4,1}));
+//        System.out.println(buySellStockOptimized(new int[]{2,4,1}));
+//        System.out.println(firstUniqCharOptimized("aabb"));
+//        System.out.println(lengthInt(12311));
+//        System.out.println(isPalindrome(123321));
+//        System.out.println(isPalindromeString("A man, a plan, a canal: Panama"));
+//        System.out.println(search(new int[]{-1,0,3,5,9,12},9));
+        System.out.println(mergeAndSort(new int[]{4,1,3,7,5,12},new int[]{11,3,7,22,43,17}));
+    }
+
+    private static List<Integer> mergeAndSort(int[] ints, int[] ints1) {
+        ArrayList<Integer> ans = new ArrayList<>();
+        for(int i: ints){
+            ans.add(i);
+        }
+        for(int i: ints1){
+            ans.add(i);
+        }
+        return ans.stream().sorted().toList();
 
     }
 
-    //2 sum
-    static int[] twoSum(int[] nums, int target) {
+    //125. Valid Palindrome
+    //    Input: s = "A man, a plan, a canal: Panama"
+    //  Output: true
+    //  Explanation: "amanaplanacanalpanama" is a palindrome.
+    public static boolean isPalindromeString(String s) {
+        char[] ch = s.toCharArray();
+        ArrayList<Character> newCh = new ArrayList<>();
+        // create the raw array
+        for(char c: ch){
+            if(c >= 'a' && c<= 'z'){
+                newCh.add(c);
+            } else if (c >= 'A' && c<= 'Z') {
+                newCh.add(Character.toLowerCase(c));
+            }
+        }
+        boolean isPal = true;
+        // check if the raw array is palindrome
+        for (int i = 0; i < newCh.size(); i++) {
+            if(newCh.get(i)!=newCh.get(newCh.size()-1-i)){
+                isPal = false;
+                break;
+            }
+        }
+        return isPal;
+
+    }
+
+    public static boolean isPalindromeOptimized(String s){
+        int left = 0, right = s.length() - 1;
+
+        while (left < right) {
+            char l = s.charAt(left);
+            char r = s.charAt(right);
+
+            // Skip non-alphanumeric characters
+            if (!Character.isLetterOrDigit(l)) {
+                left++;
+                continue;
+            }
+            if (!Character.isLetterOrDigit(r)) {
+                right--;
+                continue;
+            }
+
+            // Compare lowercase
+            if (Character.toLowerCase(l) != Character.toLowerCase(r)) {
+                return false;
+            }
+
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+
+    // code to find length of an integer
+    public static int lengthInt(int x){
+        if (x == 0) return 1;  // handle zero
+        x = Math.abs(x);        // handle negative numbers
+        int size = 0;
+        while(x>0){
+            x = x/10;
+            size++;
+        }
+        return size;
+    }
+
+    // palindrome 9. LC
+    public static boolean isPalindrome(int x) {
+        // Negative numbers or numbers ending with 0 (except 0 itself) are not palindromes
+        if(x<0 || (x!=0 && x%10 == 0))
+            return false;
+
+        int reversedHalf = 0;
+        while(x>reversedHalf){
+            reversedHalf = reversedHalf*10 + x%10;
+            x = x/10;
+            System.out.println("x ->"+x+"revX->"+reversedHalf);
+        }
+
+        return x==reversedHalf || x==reversedHalf /10;
+
+
+    }
+
+    // brute force - On2
+    public static int firstUniqChar(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            boolean unique = true;
+            for (int j = 0; j < s.length(); j++) {
+                if(i!=j){
+                    if(s.charAt(i)==s.charAt(j)){
+                        unique = false;
+                        break;
+                    }
+                }
+            }
+            if(unique)
+                return i;
+        }
+        return -1;
+    }
+
+    // hashmap approach -> LinkedHashMap maintains order
+    public static int firstUniqCharOptimized(String s) {
+        LinkedHashMap<Character, Integer> h = new LinkedHashMap<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            h.put(ch, h.getOrDefault(ch, 0) + 1);
+        }
+
+        for (Map.Entry<Character, Integer> entry : h.entrySet()) {
+            if (entry.getValue() == 1) {
+                return s.indexOf(entry.getKey());
+            }
+        }
+
+        return -1;
+    }
+
+
+
+    //2 sum -> Brute Force o(n2)
+    public static int[] twoSum(int[] nums, int target) {
         for(int i = 0 ; i< nums.length ; i++){
             for (int j = i+1; j< nums.length; j++){
                 if(nums[i]+nums[j]==target){
                     return new int[]{i,j};
                 }
             }
+        }
+        return new int[0];
+    }
+
+    // As we iterate through the array, we check if the complement (target - nums[i]) has already been seen.
+    //If yes, we immediately return the indices.
+    //If not, we store the current number and its index in a HashMap for future lookup.
+
+    public static int[] twoSumHashMapApproach(int[] nums, int target) {
+        // create a hashmap < Value in array , Index>
+        HashMap<Integer, Integer> look = new HashMap<>();
+
+        // look at the array
+        for (int i = 0; i < nums.length; i++) {
+            // if value in hashmap return
+            if(look.containsKey(target - nums[i])){
+                return new int[]{i,look.get(target - nums[i])};
+            }
+            // else store value in hashmap
+            else {
+                look.put(nums[i], i);
+            }
+
         }
         return new int[0];
     }
@@ -112,7 +275,7 @@ public class Easy {
         int position = 0;
         for (int i = 0; i < arr.length; i++)
             if(arr[i]<min)
-            {   
+            {
                 position = i;
                 min = (i == arr.length - 1) ? -1 : arr[i];
             }
@@ -137,21 +300,52 @@ public class Easy {
 
     }
 
-    // striver solution
+    // Think about what you’re actually tracking.
+    //You don’t really need to check every pair of days. You only need two things:
+    //The lowest price you’ve seen so far.
+    //The maximum profit you could get if you sold today.
+    //As you move forward in the array, at each price:
+    //You can calculate how much profit you’d make if you bought at the lowest price so far and sold today.
+    //Then update the maximum profit if this one is better.
 
-    public static int buySellStockOptimized(int[] arr){
-        int min = Integer.MAX_VALUE;
-        int maxProfit = 0;
+        public int buySellStockOptimized(int[] prices) {
+            int maxProfit = 0;
+            int lowestPrice = Integer.MAX_VALUE;
+            for(int i= 0;i<prices.length;i++){
+                if(prices[i]<lowestPrice){
+                    lowestPrice = prices[i];
+                }
+                // if i sell it today
+                int maxProfitToday = prices[i] - lowestPrice;
+                if(maxProfitToday>maxProfit){
+                    maxProfit = maxProfitToday;
+                }
 
-        for (int i = 0; i < arr.length; i++) {
-            if(arr[i] < min)
-                min = arr[i];
-            if(arr[i] - min > maxProfit)
-                maxProfit = arr[i] - min;
+            }
+            return maxProfit;
         }
 
-        return maxProfit;
+        // binary search LC
+    public static int search(int[] nums, int target) {
+        int start = 0;
+        int end = nums.length -1;
+        while(start <= end){
+            int mid = start + (end - start)/2;
+            if(target > nums[mid]){
+                start = mid+1;
+            } else if(target < nums[mid]){
+                end = mid-1;
+            } else{
+                return mid;
+            }
+        }
+        return -1;
     }
+
+
+
+
+
 
 
 

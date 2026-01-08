@@ -1,5 +1,6 @@
 package CompleteMultithreading;
 
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 // create pools of threads to do tasks
